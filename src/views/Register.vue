@@ -25,7 +25,11 @@ export default {
   },
   methods: {
     register() {
-      axios.get("http://localhost:5500/").then((res) => {
+      axios.post("http://localhost:5500/user", {
+        name: this.name,
+        email: this.email,
+        password: this.password
+      }).then((res) => {
         console.log(res);
       }).catch((error) => {
         console.log(error);
