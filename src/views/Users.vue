@@ -21,12 +21,36 @@
             <td v-else>Administrador</td>
             <td>
               <button class="button is-warning mr-2">Editar</button>
-              <button class="button is-danger">Apagar</button>
+              <button class="button is-danger" @click="handleModal(user.id)">Apagar</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <div :class="{ modal: true, 'is-active': showModal }">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="card">
+          <header class="card-header">
+            <p class="card-header-title">
+              Confirmação
+            </p>
+          </header>
+          <div class="card-content">
+            <div class="content">
+              Você realmente deseja apagar esse usuário?
+            </div>
+          </div>
+          <footer class="card-footer">
+            <a href="#" class="card-footer-item" @click="handleModal(-1)">Cancelar</a>
+            <a href="#" class="card-footer-item" @click="deleteUser()">Deletar</a>
+          </footer>
+        </div>
+      </div>
+      <button class="modal-close is-large" aria-label="close" @click="handleModal()"></button>
+    </div>
+    
   </div>
 </template>
 
@@ -49,7 +73,35 @@ export default {
   },
   data() {
     return {
-      users: []
+      users: [],
+      showModal: false,
+      deletedUser: -1,
+    }
+  },
+  methods: {
+    deleteUser() {
+
+      var req = {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        }
+      };
+
+      axios.delete("http://localhost:5500/user/" + this.deletedUser, req).then((res) => {
+        console.log(res);
+        this.showModal = false;
+        this.users = this.users.filter((user) => user.id != this.deletedUser);
+      }).catch((error) => {
+        console.log(error);
+        this.showModal = false;
+
+      });
+    },
+    handleModal(id) {
+      this.showModal = this.showModal == true ? false : true;
+      if (id != undefined) {
+        this.deletedUser = id;
+      }
     }
   }
 }
