@@ -39,7 +39,7 @@ export default {
       }).catch((error) => {
         var errorMessage = error.response.data.error;
         this.error = errorMessage;
-      })
+      });
     }
   }
 }

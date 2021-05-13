@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -25,7 +27,17 @@ export default {
   },
   methods: {
     login() {
-      console.log("Login!");
+      axios.post("http://localhost:5500/login", {
+        email: this.email,
+        password: this.password
+      }).then((res) => {
+        console.log(res);
+        localStorage.setItem('token', res.data.token);
+        this.$router.push({ name: "Home" });
+      }).catch((error) => {
+        var errorMessage = error.response.data.error;
+        this.error = errorMessage;
+      });
     }
   }
 }
